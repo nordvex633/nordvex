@@ -1,0 +1,382 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Nordvex</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: verkstadsskylt — mörkt stålband överst, ljus arbetsyta, maskingul signalfärg sparsamt */
+:root{
+  --bg:#f3f4f2; --surface:#ffffff; --ink:#15191c; --muted:#5b6268; --line:#d8dbd8;
+  --steel:#1d2428; --on-steel:#eef0ee; --signal:#f2b705; --signal-ink:#15191c; --ok:#1f7a4d; --err:#b3261e;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111517; --surface:#192024; --ink:#e9ece9; --muted:#9aa3a8; --line:#2c353a;
+  --steel:#0a0d0f; --on-steel:#eef0ee; --signal:#f5c22b; --signal-ink:#15191c; --ok:#4cc38a; --err:#ff8a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111517; --surface:#192024; --ink:#e9ece9; --muted:#9aa3a8; --line:#2c353a;
+  --steel:#0a0d0f; --on-steel:#eef0ee; --signal:#f5c22b; --signal-ink:#15191c; --ok:#4cc38a; --err:#ff8a80; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--steel)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+a{color:inherit}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* Topp */
+.top{background:var(--steel);color:var(--on-steel)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.logo{font-family:var(--display);font-weight:900;font-size:28px;letter-spacing:.04em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{width:14px;height:14px;background:var(--signal);display:inline-block;transform:rotate(45deg)}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-weight:600;font-size:15px}
+.nav ul a{text-decoration:none;opacity:.85}
+.nav ul a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+@media (max-width:560px){.nav ul li:not(:last-child){display:none}}
+
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end;padding-block:48px 64px}
+.hero h1{font-size:clamp(48px,9vw,104px);font-weight:900}
+.hero h1 span{color:var(--signal)}
+.hero p{color:color-mix(in srgb,var(--on-steel) 78%,transparent);font-size:18px;max-width:46ch;margin-top:20px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{font:inherit;font-weight:700;border:0;cursor:pointer;padding:14px 22px;border-radius:4px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-signal{background:var(--signal);color:var(--signal-ink)}
+.btn-signal:hover{filter:brightness(1.06)}
+.btn-ghost{background:transparent;color:var(--on-steel);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--on-steel) 40%,transparent)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+
+/* Två skärmar: dator + mobil */
+.devices{position:relative;min-height:230px}
+.desk{border:2px solid color-mix(in srgb,var(--on-steel) 30%,transparent);border-radius:6px;padding:12px;aspect-ratio:16/10;max-width:100%}
+.desk .bar,.phone .bar{height:8px;border-radius:2px;background:color-mix(in srgb,var(--on-steel) 20%,transparent);margin-bottom:8px}
+.desk .bar.s,.phone .bar.s{width:55%}
+.desk .blk{height:38%;background:color-mix(in srgb,var(--signal) 85%,transparent);border-radius:2px;margin-bottom:8px}
+.phone{position:absolute;right:-6px;bottom:-18px;width:30%;aspect-ratio:9/17;background:var(--steel);border:2px solid var(--on-steel);border-radius:10px;padding:10px 8px}
+.phone .blk{height:30%;background:var(--signal);border-radius:2px;margin-bottom:8px}
+@media (max-width:760px){.hero{grid-template-columns:1fr;gap:40px;padding-block:32px 56px}.devices{max-width:420px}}
+
+section{padding-block:72px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:36px}
+.head h2{font-size:clamp(36px,6vw,60px);font-weight:800}
+.head p{color:var(--muted);max-width:44ch}
+
+/* Vad du får */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.feat{background:var(--surface);padding:28px 24px;display:flex;flex-direction:column;gap:10px}
+.feat h3{font-size:26px;font-weight:800}
+.feat p{color:var(--muted)}
+@media (max-width:760px){.feats{grid-template-columns:1fr}}
+
+/* Priser */
+.start{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;background:var(--steel);color:var(--on-steel);padding:22px 26px;border-radius:6px;margin-bottom:20px}
+.start strong{font-family:var(--display);font-size:42px;font-weight:900;font-variant-numeric:tabular-nums}
+.start .label{color:color-mix(in srgb,var(--on-steel) 65%,transparent)}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px 26px;display:flex;flex-direction:column;gap:18px;position:relative}
+.plan.pick{border:2px solid var(--signal)}
+.tag{position:absolute;top:-12px;left:24px;background:var(--signal);color:var(--signal-ink);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.plan h3{font-size:30px;font-weight:800}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price b{font-family:var(--display);font-size:64px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.price span{color:var(--muted);font-weight:600}
+.plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.plan li{display:flex;gap:10px}
+.plan li::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;background:var(--signal);transform:rotate(45deg)}
+.plan li.no::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
+.plan li.no{color:var(--muted)}
+.plan .btn{margin-top:auto;justify-content:center;background:var(--ink);color:var(--bg)}
+.plan.pick .btn{background:var(--signal);color:var(--signal-ink)}
+.note{color:var(--muted);font-size:14px;margin-top:16px}
+@media (max-width:760px){.plans{grid-template-columns:1fr}}
+
+/* Så går det till */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;counter-reset:s}
+.step{border-top:3px solid var(--ink);padding-top:16px;display:grid;gap:8px}
+.step .label{color:var(--ink)}
+.step h3{font-size:24px;font-weight:800}
+.step p{color:var(--muted);font-size:15px}
+@media (max-width:860px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.steps{grid-template-columns:1fr}}
+
+/* Kontakt */
+.contact{background:var(--surface);border-top:1px solid var(--line)}
+.cgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:48px}
+.cside{display:grid;gap:20px;align-content:start}
+.cside p{color:var(--muted)}
+.mailbox{border:1px dashed var(--line);border-radius:6px;padding:16px;display:grid;gap:6px}
+.mailbox code{font-family:var(--mono);font-size:15px;word-break:break-all}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.f{display:grid;gap:6px;min-width:0}
+.f.full{grid-column:1/-1}
+label,legend{font-weight:600;font-size:14px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:4px;padding:12px 12px;width:100%}
+textarea{min-height:120px;resize:vertical}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:8px;grid-column:1/-1}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.choice span{display:block;border:1.5px solid var(--line);border-radius:4px;padding:12px;height:100%;font-size:14px;line-height:1.35}
+.choice span b{display:block;font-size:15px}
+.choice input:checked+span{border-color:var(--signal);box-shadow:inset 0 0 0 1.5px var(--signal);background:color-mix(in srgb,var(--signal) 10%,var(--surface))}
+.choice input:focus-visible+span{outline:3px solid var(--signal);outline-offset:2px}
+.err{color:var(--err);font-size:13px}
+.submit{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.submit .btn{background:var(--signal);color:var(--signal-ink)}
+#result{grid-column:1/-1;border:1.5px solid var(--ok);border-radius:6px;padding:18px;display:grid;gap:12px}
+#result pre{margin:0;white-space:pre-wrap;font-family:var(--mono);font-size:13px;background:var(--bg);padding:12px;border-radius:4px;overflow-x:auto}
+@media (max-width:760px){.cgrid{grid-template-columns:1fr;gap:32px}form{grid-template-columns:1fr}.choices{grid-template-columns:1fr}}
+
+footer{background:var(--steel);color:color-mix(in srgb,var(--on-steel) 70%,transparent);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:28px}
+footer b{color:var(--on-steel);font-family:var(--display);font-size:20px;letter-spacing:.04em}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <nav class="nav">
+      <a class="logo" href="#top"><i></i>NORDVEX</a>
+      <ul>
+        <li><a href="#tjanster">Vad du får</a></li>
+        <li><a href="#priser">Priser</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="hero" id="top">
+      <div>
+        <p class="label" style="color:var(--signal)">Hemsidor för företag i Sverige</p>
+        <h1>En ny hemsida som <span>funkar</span> på riktigt</h1>
+        <p>Vi bygger hemsidor till dem som behöver en ny hemsida. Sidan ser bra ut på både mobilen och datorn, och dina kunder hittar snabbt det de letar efter.</p>
+        <div class="cta">
+          <a class="btn btn-signal" href="#kontakt">Boka ett samtal</a>
+          <a class="btn btn-ghost" href="#priser">Se priser</a>
+        </div>
+      </div>
+      <div class="devices" aria-hidden="true">
+        <div class="desk"><div class="bar s"></div><div class="blk"></div><div class="bar"></div><div class="bar"></div><div class="bar s"></div></div>
+        <div class="phone"><div class="bar s"></div><div class="blk"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="tjanster">
+    <div class="wrap">
+      <div class="head">
+        <h2>Vad du får</h2>
+        <p>Du får en färdig sida som jobbar för ditt företag.</p>
+      </div>
+      <div class="feats">
+        <div class="feat"><span class="label">Mobil + dator</span><h3>Funkar överallt</h3><p>Sidan anpassar sig efter skärmen, så den ser rätt ut på telefonen ute i fält och på datorn på kontoret.</p></div>
+        <div class="feat"><span class="label">Modern design</span><h3>Ser seriös ut</h3><p>En ren och tydlig sida som visar vad du gör, var du finns och hur kunden når dig.</p></div>
+        <div class="feat"><span class="label">Kontakt</span><h3>Lätt att höra av sig</h3><p>Telefonnummer, adress och kontaktformulär syns direkt, så att fler kunder ringer och mejlar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="priser" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <h2>Priser</h2>
+        <p>Du betalar en gång för att få hemsidan byggd. Sedan väljer du ett av två månadspaket.</p>
+      </div>
+      <div class="start">
+        <div><p class="label">Engångskostnad</p><p style="font-weight:600">Byggande av hemsida</p></div>
+        <strong>899 kr</strong>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <h3>Fast hemsida</h3>
+          <div class="price"><b>1 500</b><span>kr / månad</span></div>
+          <ul>
+            <li>Hemsidan hålls igång och ligger uppe</li>
+            <li>Sidan stannar som den är när den är klar</li>
+            <li class="no">Inga ändringar efter att sidan är klar</li>
+          </ul>
+          <a class="btn" href="#kontakt" data-plan="fast">Välj Fast hemsida</a>
+        </article>
+        <article class="plan pick">
+          <span class="tag">Fritt ändra</span>
+          <h3>Hemsida med ändringar</h3>
+          <div class="price"><b>2 000</b><span>kr / månad</span></div>
+          <ul>
+            <li>Hemsidan hålls igång och ligger uppe</li>
+            <li>Ändringar av sidan när du vill</li>
+            <li>Nya bilder, priser, öppettider och texter</li>
+          </ul>
+          <a class="btn" href="#kontakt" data-plan="andringar">Välj Hemsida med ändringar</a>
+        </article>
+      </div>
+      <p class="note">899 kr betalas en gång. Paketen på 1 500 kr och 2 000 kr betalas varje månad.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><h2>Så går det till</h2></div>
+      <div class="steps">
+        <div class="step"><span class="label">Steg 1</span><h3>Boka samtal</h3><p>Fyll i formuläret och välj en dag som passar dig.</p></div>
+        <div class="step"><span class="label">Steg 2</span><h3>Vi pratar</h3><p>Vi ringer upp dig och går igenom vad sidan ska innehålla.</p></div>
+        <div class="step"><span class="label">Steg 3</span><h3>Jag bygger</h3><p>Du får se ett förslag och säga vad du tycker innan den går live.</p></div>
+        <div class="step"><span class="label">Steg 4</span><h3>Sidan är uppe</h3><p>Hemsidan publiceras och jag håller den igång varje månad.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="kontakt">
+    <div class="wrap cgrid">
+      <div class="cside">
+        <div class="head" style="margin:0"><h2>Boka ett samtal</h2></div>
+        <p>Berätta lite om ditt företag och välj en dag då jag kan ringa dig. Jag hör av mig och bekräftar tiden via mejl.</p>
+        <div class="mailbox">
+          <span class="label">E-post</span>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><code id="mailText" style="user-select:all">nordvextkontakt@gmail.com</code><button class="btn" type="button" id="copyMail" style="background:var(--ink);color:var(--bg);padding:8px 14px;font-size:14px">Kopiera</button></div>
+        </div>
+      </div>
+
+      <form id="bookForm" novalidate>
+        <div class="f"><label for="namn">För- och efternamn</label><input id="namn" name="namn" autocomplete="name" required><span class="err" id="namn-err" hidden>Skriv ditt namn.</span></div>
+        <div class="f"><label for="foretag">Företag</label><input id="foretag" name="foretag" autocomplete="organization"></div>
+        <div class="f"><label for="tel">Telefon</label><input id="tel" name="tel" type="tel" autocomplete="tel" required><span class="err" id="tel-err" hidden>Skriv ett telefonnummer så jag kan ringa dig.</span></div>
+        <div class="f"><label for="epost">E-post</label><input id="epost" name="epost" type="email" autocomplete="email" required><span class="err" id="epost-err" hidden>Skriv en giltig e-postadress, t.ex. namn@foretag.se.</span></div>
+
+        <fieldset>
+          <legend>Vilket paket är du intresserad av?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="paket" id="p-fast" value="Fast hemsida (899 kr + 1 500 kr/mån)"><span><b>Fast hemsida</b>899 kr + 1 500 kr/mån</span></label>
+            <label class="choice"><input type="radio" name="paket" id="p-andr" value="Hemsida med ändringar (899 kr + 2 000 kr/mån)" checked><span><b>Med ändringar</b>899 kr + 2 000 kr/mån</span></label>
+            <label class="choice"><input type="radio" name="paket" id="p-vet" value="Vet inte än"><span><b>Vet inte än</b>Vi pratar om det</span></label>
+          </div>
+        </fieldset>
+
+        <div class="f"><label for="datum">Önskat datum för samtal</label><input id="datum" name="datum" type="date" required><span class="err" id="datum-err" hidden>Välj ett datum från i dag och framåt.</span></div>
+        <div class="f"><label for="tid">Önskad tid</label>
+          <select id="tid" name="tid"><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option></select></div>
+        <div class="f full"><label for="medd">Berätta kort om ditt företag (valfritt)</label><textarea id="medd" name="medd" placeholder="T.ex. Vi är en bilverkstad i Tomelilla och har ingen hemsida i dag."></textarea></div>
+
+        <div class="submit"><button class="btn" type="submit">Skicka förfrågan</button></div>
+
+        <div id="result" hidden aria-live="polite">
+          <p><b id="resultHead">Nästan klart.</b> <span id="resultText"></span></p>
+          <pre id="summary"></pre>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <a class="btn btn-signal" id="mailLink" href="#" hidden>Öppna i mejlprogrammet</a>
+            <button class="btn" type="button" id="copyBtn" style="background:var(--ink);color:var(--bg)">Kopiera texten</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><b>NORDVEX</b><span>Hemsidor för företag i Sverige</span></div>
+</footer>
+
+<script>
+// Fyll i din e-postadress här när du har bestämt den, t.ex. "hej@nordvex.se"
+const EMAIL = "nordvextkontakt@gmail.com";
+
+const $ = id => document.getElementById(id);
+
+const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+const minDate = today.toISOString().slice(0,10);
+$("datum").min = minDate;
+
+document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => {
+  $(a.dataset.plan === "fast" ? "p-fast" : "p-andr").checked = true;
+}));
+
+function check(id, ok){ $(id+"-err").hidden = ok; $(id).setAttribute("aria-invalid", ok ? "false" : "true"); return ok; }
+
+$("bookForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim();
+  const ok = [
+    check("namn", v("namn").length > 1),
+    check("tel", v("tel").replace(/\D/g,"").length >= 7),
+    check("epost", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("epost"))),
+    check("datum", !!v("datum") && v("datum") >= minDate)
+  ].every(Boolean);
+  if (!ok) { document.querySelector("[aria-invalid='true']").focus(); return; }
+
+  const paket = document.querySelector("input[name=paket]:checked").value;
+  const text =
+`Bokningsförfrågan – Nordvex
+
+Namn: ${v("namn")}
+Företag: ${v("foretag") || "–"}
+Telefon: ${v("tel")}
+E-post: ${v("epost")}
+Paket: ${paket}
+Önskat samtal: ${v("datum")}, ${$("tid").value}
+
+${v("medd") || ""}`.trim();
+
+  $("summary").textContent = text;
+  $("mailLink").hidden = true;
+  const btn = document.querySelector(".submit .btn");
+  btn.disabled = true; btn.textContent = "Skickar…";
+
+  const showFallback = () => {
+    $("resultHead").textContent = "Nästan klart.";
+    $("resultText").textContent = "Förfrågan kunde inte skickas automatiskt. Kopiera texten nedan och mejla den till " + EMAIL + ".";
+    $("summary").hidden = false; $("copyBtn").hidden = false;
+  };
+  const showSent = () => {
+    $("resultHead").textContent = "Tack!";
+    $("resultText").textContent = "Din förfrågan är skickad. Vi hör av oss och bekräftar tiden via mejl.";
+    $("summary").hidden = true; $("copyBtn").hidden = true;
+    $("bookForm").querySelectorAll("input:not([type=radio]),textarea").forEach(el => el.value = "");
+  };
+
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        access_key: "43e62e17-9fbb-41c5-bb1e-f7dade99fae4",
+        subject: "Ny bokning från hemsidan – " + v("namn"),
+        from_name: "Nordvex hemsida",
+        replyto: v("epost"),
+        Namn: v("namn"),
+        Företag: v("foretag") || "–",
+        Telefon: v("tel"),
+        "E-post": v("epost"),
+        Paket: paket,
+        "Önskat samtal": v("datum") + ", " + $("tid").value,
+        Meddelande: v("medd") || "–"
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && String(data.success) === "true") showSent(); else showFallback();
+  } catch (_) { showFallback(); }
+
+  btn.disabled = false; btn.textContent = "Skicka förfrågan";
+  $("result").hidden = false;
+  $("result").scrollIntoView({block:"nearest"});
+});
+
+$("copyMail").addEventListener("click", () => {
+  const b = $("copyMail");
+  const done = () => { b.textContent = "Kopierad"; setTimeout(()=>b.textContent="Kopiera",1800); };
+  const sel = () => { const r=document.createRange(); r.selectNodeContents($("mailText")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(EMAIL).then(done).catch(sel); } catch(_) { sel(); }
+});
+
+$("copyBtn").addEventListener("click", () => {
+  const t = $("summary").textContent;
+  const done = () => { $("copyBtn").textContent = "Kopierat"; setTimeout(()=>$("copyBtn").textContent="Kopiera texten",1800); };
+  try {
+    navigator.clipboard.writeText(t).then(done).catch(selectIt);
+  } catch(_) { selectIt(); }
+  function selectIt(){ const r=document.createRange(); r.selectNodeContents($("summary")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+});
+</script>
+
+</body></html>
